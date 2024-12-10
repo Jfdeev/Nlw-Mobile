@@ -13,48 +13,47 @@ export default function Home() {
     const [ category, setCategory] = useState("")
     const [ markets, setMarkets ] = useState<MarketsProps[]>([])
 
-    async function fetchCategories(){
+    async function fetchCategories() {
         try {
-            const { data } = await api.get("/categories")
-            setCategories(data)
-            setCategory(data[0].id)
+          const { data } = await api.get("/categories")
+          console.log(data)
+          setCategories(data)
+          setCategory(data[0].id)
         } catch (error) {
-            console.log(error)
-            Alert.alert("Categorias", "Erro ao buscar categorias")
+          console.log(error)
+          Alert.alert("Categorias", "Não foi possível carregar as categorias.")
         }
     }
-
-    async function fetchPlaces() {
+    async function fetchMarkets() {
         try {
-            if (!category) {
-                console.log("Categoria não definida");
-                return; // Se a categoria não for válida, não faça a requisição
-            }
-            console.log("Fazendo requisição para a categoria:", category);
-            const { data } = await api.get(`/markets/category/${category}`);
-            setMarkets(data);
-            console.log("Locais recebidos:", data);
+          if (!category) {
+            return
+          }
+    
+          const { data } = await api.get("/markets/category/" + category)
+          setMarkets(data)
+          console.log(data)
         } catch (error) {
-            console.log("Erro ao fazer requisição:", error);
-            Alert.alert("Locais", "Erro ao buscar locais");
+          console.log(error)
+          Alert.alert("Locais", "Não foi possível carregar os locais.")
         }
-    }
+      }
 
     useEffect(() => {
         fetchCategories()
     }, [])
 
     useEffect(() => {
-        fetchPlaces()
+        fetchMarkets()
     }, [category])
 
-    return <View style={{flex: 1}}>
-        <Text>Home</Text>
-        <Categories 
-        data={categories} 
-        onSelect={setCategory} 
+    return (<View style={{flex: 1}}>
+        <Categories
+        data={categories}
+        onSelect={setCategory}
         selected={category}
-        />
+      />
         <Places data={markets} />
     </View>
+    )
 }
