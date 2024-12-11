@@ -29,7 +29,8 @@ export default function Home() {
           if (!category) {
             return
           }
-    
+          
+          console.log("Buscando mercados da categoria: ", category)
           const { data } = await api.get("/markets/category/" + category)
           setMarkets(data)
           console.log(data)
